@@ -1,0 +1,179 @@
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /accounts/{account_id}/transactions/{month}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Monthly Transactions API
+      description: API for fetching all transactions for a specified month for a specific account
+      parameters:
+        - in: path
+          name: account_id
+          type: string
+          required: true
+          description: Account ID
+        - in: path
+          name: month
+          type: string
+          required: true
+          description: Month for which transactions are to be fetched 
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+          description: Authorization Token
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Monthly transactions retrieved successfully
+          schema:
+            $ref: '#/definitions/MonthlyTransactions'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+  /transactions/{transaction_id}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Transaction Details API
+      description: API for fetching a transaction details
+      parameters:
+        - in: path
+          name: transaction_id
+          type: string
+          required: true
+          description: Transaction ID
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+          description: Authorization Token
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionDetails'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Transaction Not Found
+        '500':
+          description: Internal Server Error
+  /transactions/{transaction_id}/note-category:
+    put:
+      tags:
+        - Transaction Module
+      summary: Update Transaction Note and Category by ID
+      description: API to update a transaction's note and category by ID
+      parameters:
+        - in: path
+          name: transaction_id
+          type: integer
+          required: true
+          description: Transaction ID
+        - in: body
+          name: body
+          description: Update transaction note and category
+          required: true
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+              category:
+                type: string
+        - in: header
+          name: authorization
+          type: string
+          required: true
+          description: Authorization Token
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Transaction note and category updated successfully
+          schema:
+            $ref: '#/definitions/UpdateNoteCategory'
+        '400':
+          description: Invalid Fields
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Transaction Not Found
+        '500':
+          description: Internal Server Error
+
+          
+definitions:
+  TransactionDetails:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        type:
+          type: string
+        category:
+          type: string
+        notes:
+          type: string
+  MonthlyTransactions:
+    type: array
+    items:
+      type: object
+      properties:
+        account:
+          type: string
+        transactions:
+          type: array
+          items:
+            $ref: '#/definitions/TransactionDetails'
+  UpdateNoteCategory:
+    type: object
+    properties:
+      note:
+        type: string
+        description: The note for the transaction
+      category:
+        type: string
+        description: The category of the transaction
+    required:
+      - note
+      - category
