@@ -13,7 +13,7 @@
     "axios": "^1.6.7",
     "bibliothequereact": "^1.0.4",
     "colorfulltoast": "^1.0.4",
-    "colorfultoasts": "^1.0.5",
+    "colorfultoasts": "^1.1.2",
     "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
